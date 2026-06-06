@@ -1,0 +1,69 @@
+{
+  "projectType": "general",
+  "projectName": "NestJS DevTools",
+  "projectDescription": "A VS Code extension that supercharges NestJS development with smart logger insertion and instant module file navigation.",
+  "theme": "luma",
+  "primaryColor": "#E0234E",
+  "lightColor": "#FF4D6D",
+  "darkColor": "#C41840",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/logger-helper",
+              "features/module-file-searcher"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/commands",
+              "reference/keyboard-shortcuts",
+              "reference/file-types"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/development",
+              "contributing/changelog"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Smart NestJS Logger insertion (debug, log, warn, error, verbose) with automatic class name detection",
+    "Intelligent insertion point detection — places logger after closing braces, not inside code blocks",
+    "Module File Searcher — instantly navigate all files within a NestJS module using shortcut letters",
+    "Browse All Modules picker — list every *.module.ts in the workspace and jump into its files",
+    "Files grouped by category: Core NestJS, Entities, DTOs, Enums, Interfaces, Other",
+    "Keyboard chord shortcuts for all commands (Cmd+L / Ctrl+L prefix)",
+    "18 recognized NestJS file types with emoji labels and instant shortcut navigation"
+  ],
+  "publicApiSurface": [
+    "nestjs-log-helper.insertDebugLog — Insert this.logger.debug() with class context",
+    "nestjs-log-helper.insertLogLog — Insert this.logger.log() with class context",
+    "nestjs-log-helper.insertWarnLog — Insert this.logger.warn() with class context",
+    "nestjs-log-helper.insertErrorLog — Insert this.logger.error() with class context",
+    "nestjs-log-helper.insertVerboseLog — Insert this.logger.verbose() with class context",
+    "nestjs-log-helper.moduleSearcher — Browse all modules in workspace and navigate files",
+    "nestjs-log-helper.searchModuleFiles — Search files in the current file's module",
+    "insertLoggerStatement(method) — Core logger insertion function",
+    "findAllModuleFiles(moduleRoot) — Discovers and categorises all .ts files in a module directory",
+    "getEnclosingClassName(document, line) — Walks up from cursor to find the enclosing class name"
+  ]
+}

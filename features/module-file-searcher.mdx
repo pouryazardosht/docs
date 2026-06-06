@@ -1,0 +1,116 @@
+---
+title: "Module File Searcher: Instant NestJS Module Navigation"
+sidebarTitle: "Module File Searcher"
+description: "Navigate every file in a NestJS module using a grouped quick-pick with one- or two-letter shortcuts. Works from any file in the module tree."
+---
+
+Module File Searcher opens a VS Code quick-pick listing every `.ts` file inside the current NestJS module, grouped by file type, with instant shortcut-letter navigation. Stop hunting through the file explorer — find any service, guard, DTO, or entity in your module with two keystrokes.
+
+## Two commands
+
+<Tabs>
+  <Tab title="Search from Current File">
+    **`Cmd+L Cmd+K`** (macOS) / **`Ctrl+L Ctrl+K`** (Windows / Linux)
+
+    From any TypeScript file inside a module — even one nested deep in a subdirectory like `auth/dto/` or `users/strategies/` — this command:
+
+    1. Reads the path of the currently open file.
+    2. Walks **up** the directory tree toward the workspace root, checking each directory for a `*.module.ts` file.
+    3. Once a directory containing a `*.module.ts` file is found, that directory becomes the **module root**.
+    4. All `.ts` files beneath the module root are found recursively and displayed in a grouped quick-pick.
+
+    You never need to be in the module's top-level folder — the searcher finds the root automatically from wherever you are.
+  </Tab>
+  <Tab title="Browse All Modules">
+    **`Cmd+L Cmd+M`** (macOS) / **`Ctrl+L Ctrl+M`** (Windows / Linux)
+
+    This command searches the **entire workspace** for `*.module.ts` files (excluding `node_modules`) and presents them in a first quick-pick sorted alphabetically. Once you select a module, the same grouped file list opens — identical to the one produced by "Search from Current File."
+
+    Use this command when you want to jump to a module other than the one you are currently editing.
+  </Tab>
+</Tabs>
+
+## File categories
+
+Files are grouped in the following order, matching the `categoryOrder` defined in the source:
+
+| Category     | File Type   | Emoji | Shortcut |
+| ------------ | ----------- | ----- | -------- |
+| Core NestJS  | Service     | 🛠️    | S        |
+| Core NestJS  | Controller  | 🎮    | C        |
+| Core NestJS  | Module      | 📦    | M        |
+| Core NestJS  | Guard       | 🛡️    | G        |
+| Core NestJS  | Gateway     | 🌐    | GW       |
+| Core NestJS  | Interceptor | 🚧    | I        |
+| Core NestJS  | Pipe        | 🔧    | P        |
+| Core NestJS  | Filter      | 🧹    | F        |
+| Core NestJS  | Resolver    | 🧬    | R        |
+| Core NestJS  | Decorator   | 🎨    | D        |
+| Entities     | Entity      | 🗃️    | E        |
+| DTOs         | DTO         | 📋    | DT       |
+| Enums        | Enum        | 🎛️    | EN       |
+| Interfaces   | Interface   | 🔗    | IF       |
+| Other        | Repository  | 🗄️    | RP       |
+| Other        | Middleware  | ⚙️    | MW       |
+| Other        | Strategy    | 🧠    | ST       |
+| Other        | Test        | 🧪    | T        |
+
+Each file type is matched by its filename suffix (e.g. `.service.ts`, `.guard.ts`, `.dto.ts`). Plural variants are also recognised for the following types that commonly appear in that form: `guard`, `gateway`, `interceptor`, `pipe`, `filter`, `decorator`, `resolver`, `middleware`, and `strategy` — so `.guards.ts`, `.interceptors.ts`, `.strategies.ts`, and similar are matched correctly.
+
+## Instant shortcuts
+
+Each file entry in the quick-pick shows its shortcut letter in the description:
+
+```text
+🛠️  user.service.ts          Service (S)  |  src/users/user.service.ts
+🎮  users.controller.ts      Controller (C)  |  src/users/users.controller.ts
+📦  users.module.ts          Module (M)  |  src/users/users.module.ts
+```
+
+Type the shortcut letter (e.g. `s`) directly into the quick-pick input and the matching file **opens immediately** — no Enter key required. The `onDidChangeValue` handler compares the typed value (case-insensitive) against each item's shortcut; the first exact match triggers navigation and closes the picker.
+
+Files whose names do not match any known NestJS suffix are shown as `📄 File` in a final **Other Files** category and are accessible by scrolling or filtering by name.
+
+## Module root detection
+
+For the "Search from Current File" command, the extension locates the module root with the following algorithm (from `searchModuleFiles.ts`):
+
+1. Start at the **directory of the currently open file**.
+2. Check whether that directory contains a `*.module.ts` file using `vscode.workspace.findFiles`.
+3. If not found, move to the **parent directory** and repeat.
+4. Stop when a `*.module.ts` file is found — that directory is the module root — or when the workspace root is reached without a match.
+5. Recursively find all `.ts` files under the module root directory, excluding `node_modules`.
+
+```typescript
+// Simplified representation of the walk-up algorithm
+let dir = path.dirname(currentFilePath);
+while (dir.startsWith(workspaceRoot)) {
+  const found = await vscode.workspace.findFiles(
+    new vscode.RelativePattern(dir, "*.module.ts"),
+    null,
+    1
+  );
+  if (found.length > 0) {
+    moduleRoot = dir; // ← module root found
+    break;
+  }
+  dir = path.dirname(dir); // walk up one level
+}
+```
+
+<Tip>
+  Even files in deeply nested subdirectories — such as
+  `auth/strategies/jwt.strategy.ts` or `users/dto/create-user.dto.ts` — are
+  found and shown in the picker. The searcher recurses the full module directory
+  tree from the root it detects.
+</Tip>
+
+<Note>
+  `node_modules` directories are excluded from all file searches. The
+  `findFiles` call passes `"**/node_modules/**"` as the exclude glob pattern,
+  so third-party packages never appear in the picker.
+</Note>
+
+<Card title="File Types Reference" icon="list" href="/reference/file-types">
+  See all recognised NestJS file types
+</Card>

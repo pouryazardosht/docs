@@ -1,0 +1,129 @@
+---
+title: "NestJS DevTools Quickstart: Logger and Module Navigation"
+sidebarTitle: "Quickstart"
+description: "Learn how to insert your first NestJS logger statement and navigate module files with NestJS DevTools in under five minutes. No configuration needed."
+---
+
+In the next five minutes you will insert your first smart logger statement and open the module file picker — the two core workflows that NestJS DevTools is built around. No configuration needed; everything works out of the box the moment the extension is installed.
+
+## Part 1: Insert a logger statement
+
+<Steps>
+  <Step title="Open a NestJS TypeScript file">
+    Open any TypeScript file that contains a class — for example, `user.service.ts`. Make sure VS Code has the file focused in the active editor.
+  </Step>
+  <Step title="Select a variable or expression">
+    Place the cursor on a line with a variable you want to log, then select that variable. For example, on this line:
+
+    ```typescript
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    ```
+
+    Select the word `user` on the `const user` line.
+  </Step>
+  <Step title="Press the debug log chord">
+    Press `Cmd+L Cmd+D` on macOS or `Ctrl+L Ctrl+D` on Windows/Linux to insert a debug log statement.
+
+    Because the selected line ends with `{` (opening a multi-line object argument), NestJS DevTools traces the closing `}` on the third line and inserts the log *after* that closing brace — never inside the block:
+
+    ```typescript
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    this.logger.debug("🔍 UserService ~ user", user);
+    ```
+
+    <Note>
+      `UserService` was detected automatically. The extension scanned upward from the cursor and found the enclosing `class UserService` declaration — no manual input required.
+    </Note>
+  </Step>
+  <Step title="Confirm in the status bar">
+    The VS Code status bar briefly displays **✅ Logger.debug inserted** for three seconds to confirm the operation succeeded.
+  </Step>
+</Steps>
+
+The same workflow applies to all five log levels. Use the chord that matches the severity you need:
+
+| Method | macOS | Windows/Linux | Emoji |
+|---|---|---|---|
+| `debug` | `Cmd+L Cmd+D` | `Ctrl+L Ctrl+D` | 🔍 |
+| `log` | `Cmd+L Cmd+L` | `Ctrl+L Ctrl+L` | 📝 |
+| `warn` | `Cmd+L Cmd+W` | `Ctrl+L Ctrl+W` | ⚠️ |
+| `error` | `Cmd+L Cmd+E` | `Ctrl+L Ctrl+E` | ❌ |
+| `verbose` | `Cmd+L Cmd+V` | `Ctrl+L Ctrl+V` | 🔊 |
+
+## Part 2: Navigate module files
+
+<Steps>
+  <Step title="Open any file inside a module">
+    Navigate to any `.ts` file that lives inside a NestJS module folder — even a deeply nested one, such as `src/auth/dto/create-user.dto.ts`. You do not need to be in the module root; the extension will walk up the directory tree to find the nearest `*.module.ts`.
+
+    Press `Cmd+L Cmd+K` on macOS or `Ctrl+L Ctrl+K` on Windows/Linux to trigger **Search Module Files**.
+  </Step>
+  <Step title="Browse the grouped quick-pick">
+    A quick-pick panel appears listing every `.ts` file found under the module root, organised into named category sections:
+
+    - **Core NestJS** — services, controllers, modules, guards, gateways, interceptors, pipes, filters, resolvers, decorators
+    - **Entities**
+    - **DTOs**
+    - **Enums**
+    - **Interfaces**
+    - **Other** — repositories, middleware, strategies, test specs
+    - **Other Files** — any `.ts` files that do not match a known NestJS suffix
+
+    Each entry shows its emoji, file name, type label, shortcut letter, and relative path.
+  </Step>
+  <Step title="Type a shortcut letter to open instantly">
+    Type the shortcut letter for the file type you want. The file opens the moment your input matches a known shortcut — no Enter required:
+
+    | Shortcut | File type |
+    |---|---|
+    | `s` | Service |
+    | `c` | Controller |
+    | `m` | Module |
+    | `g` | Guard |
+    | `gw` | Gateway |
+    | `i` | Interceptor |
+    | `p` | Pipe |
+    | `f` | Filter |
+    | `r` | Resolver |
+    | `d` | Decorator |
+    | `e` | Entity |
+    | `dt` | DTO |
+    | `en` | Enum |
+    | `if` | Interface |
+    | `rp` | Repository |
+    | `mw` | Middleware |
+    | `st` | Strategy |
+    | `t` | Test (spec) |
+
+    You can also scroll the list manually and press Enter to open any highlighted file.
+  </Step>
+</Steps>
+
+### Browse from the module picker
+
+If you want to navigate to a module other than the one containing your current file, use the **Open Module Files** command instead:
+
+1. Press `Cmd+L Cmd+M` (macOS) or `Ctrl+L Ctrl+M` (Windows/Linux).
+2. A picker lists every `*.module.ts` file found in your workspace, sorted alphabetically.
+3. Select a module — the same grouped file picker appears for that module, ready for a shortcut-letter jump.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Logger Helper deep-dive" icon="bug" href="/features/logger-helper">
+    Explore all five log levels, learn how class-name detection works, and see how indentation and block-end insertion are handled.
+  </Card>
+  <Card title="Module File Searcher deep-dive" icon="folder-open" href="/features/module-file-searcher">
+    Understand the full file-categorisation system, the directory-walking algorithm, and the complete shortcut-letter reference.
+  </Card>
+  <Card title="Full command reference" icon="list" href="/reference/commands">
+    Every command ID, its default keyboard binding, and the `when` clause that controls when it is active.
+  </Card>
+  <Card title="Keyboard shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+    A printable reference for all chords on both macOS and Windows/Linux, plus instructions for customising them.
+  </Card>
+</CardGroup>

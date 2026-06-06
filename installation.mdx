@@ -1,0 +1,65 @@
+---
+title: "Install NestJS DevTools VS Code Extension from Marketplace"
+sidebarTitle: "Installation"
+description: "Install the NestJS DevTools VS Code extension from the Marketplace or from a .vsix file. Requires VS Code 1.118.0 or later and no project config."
+---
+
+This guide walks you through installing the **NestJS DevTools** extension published by `pouryazardosht`. The extension requires **Visual Studio Code 1.118.0 or later** (`^1.118.0` as declared in `package.json`). No other tools, runtimes, or project-level packages are needed — NestJS DevTools is entirely self-contained inside VS Code.
+
+## Install from the Marketplace
+
+The fastest way to install NestJS DevTools is directly from the VS Code Extensions Marketplace.
+
+<Steps>
+  <Step title="Open the Extensions view">
+    Launch VS Code and press `Cmd+Shift+X` on macOS or `Ctrl+Shift+X` on Windows/Linux to open the Extensions side panel.
+  </Step>
+  <Step title="Search for NestJS DevTools">
+    Type **NestJS DevTools** in the search bar at the top of the panel.
+  </Step>
+  <Step title="Click Install">
+    Locate the result published by **pouryazardosht** and click the **Install** button.
+  </Step>
+  <Step title="Reload VS Code if prompted">
+    VS Code may display a **Reload Required** prompt after installation completes. Click **Reload** (or restart VS Code manually) to activate the extension.
+  </Step>
+</Steps>
+
+## Install from VSIX
+
+If you prefer to install a specific version manually — for example, a pre-release build or an offline environment — you can install from a `.vsix` file.
+
+<Steps>
+  <Step title="Download the .vsix file">
+    Visit the [NestJS DevTools GitHub releases page](https://github.com/pouryazardosht/nestjs-devtools/releases) and download the `.vsix` asset from the release you want to install.
+  </Step>
+  <Step title="Open the Command Palette">
+    Press `Cmd+Shift+P` on macOS or `Ctrl+Shift+P` on Windows/Linux to open the VS Code Command Palette.
+  </Step>
+  <Step title="Run 'Extensions: Install from VSIX…'">
+    Type **Extensions: Install from VSIX** and select that command. In the file dialog that appears, navigate to the `.vsix` file you downloaded and confirm the selection. VS Code will install the extension immediately.
+  </Step>
+</Steps>
+
+## Verify the installation
+
+Once installed, confirm that NestJS DevTools is active:
+
+1. Open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`).
+2. Type **NestJS Devtools** in the input field.
+
+You should see all seven commands listed:
+
+- NestJS Devtools: Insert debug log
+- NestJS Devtools: Insert log log
+- NestJS Devtools: Insert warn log
+- NestJS Devtools: Insert error log
+- NestJS Devtools: Insert verbose log
+- NestJS Devtools: Search Module Files
+- NestJS Devtools: Open Module Files
+
+If the commands appear, the extension is installed and ready to use. You can also customise every keyboard shortcut via **Preferences: Open Keyboard Shortcuts** — search for `nestjs-log-helper` or `nestjs-dev-tools` to find all bindings.
+
+<Note>
+  No additional npm packages or configuration files are required in your NestJS project. The extension is entirely self-contained and activates automatically when VS Code starts.
+</Note>

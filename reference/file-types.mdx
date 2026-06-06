@@ -1,0 +1,121 @@
+---
+title: "NestJS File Types Recognised by Module File Searcher"
+sidebarTitle: "File Types"
+description: "All 18 NestJS file type suffixes recognised by the Module File Searcher, with their categories, shortcut letters, and emoji labels."
+---
+
+The Module File Searcher classifies `.ts` files by matching their filename suffix against a known list of NestJS patterns defined in `src/constants.ts`. Every file that matches a known pattern appears in the quick-pick with a category label, a coloured emoji, and a shortcut letter you can type to open it instantly — no arrow-key navigation required.
+
+---
+
+## How matching works
+
+The extension checks whether a filename ends with `.<suffix>.ts`. For example, `user.service.ts` matches the suffix `service`, and `auth.guard.ts` matches `guard`.
+
+Some types also accept a **plural** suffix — the extension checks both `.<suffix>.ts` and `.<suffix>s.ts` for the following types:
+
+| Singular suffix | Plural suffix also accepted |
+|---|---|
+| `guard` | `guards` |
+| `gateway` | `gateways` |
+| `interceptor` | `interceptors` |
+| `pipe` | `pipes` |
+| `filter` | `filters` |
+| `decorator` | `decorators` |
+| `resolver` | `resolvers` |
+| `middleware` | `middlewares` |
+| `strategy` | `strategies` |
+
+Matching is evaluated in the order that types appear in the `NEST_TYPES` array. The first match wins. Files that match no known suffix fall into the **Other Files** category (see [Unrecognised files](#unrecognised-files) below).
+
+---
+
+## File type reference
+
+<AccordionGroup>
+  <Accordion title="Core NestJS">
+    The primary NestJS building blocks. These are the most common file types you will navigate between.
+
+    | Type | Suffix | Shortcut | Emoji |
+    |---|---|---|---|
+    | Service | `.service.ts` | `S` | 🛠️ |
+    | Controller | `.controller.ts` | `C` | 🎮 |
+    | Module | `.module.ts` | `M` | 📦 |
+    | Guard | `.guard.ts` / `.guards.ts` | `G` | 🛡️ |
+    | Gateway | `.gateway.ts` / `.gateways.ts` | `GW` | 🌐 |
+    | Interceptor | `.interceptor.ts` / `.interceptors.ts` | `I` | 🚧 |
+    | Pipe | `.pipe.ts` / `.pipes.ts` | `P` | 🔧 |
+    | Filter | `.filter.ts` / `.filters.ts` | `F` | 🧹 |
+    | Resolver | `.resolver.ts` / `.resolvers.ts` | `R` | 🧬 |
+    | Decorator | `.decorator.ts` / `.decorators.ts` | `D` | 🎨 |
+  </Accordion>
+
+  <Accordion title="Entities">
+    TypeORM / Mongoose entity files that map to database tables or collections.
+
+    | Type | Suffix | Shortcut | Emoji |
+    |---|---|---|---|
+    | Entity | `.entity.ts` | `E` | 🗃️ |
+  </Accordion>
+
+  <Accordion title="DTOs">
+    Data Transfer Objects used to validate and shape request and response payloads.
+
+    | Type | Suffix | Shortcut | Emoji |
+    |---|---|---|---|
+    | DTO | `.dto.ts` | `DT` | 📋 |
+  </Accordion>
+
+  <Accordion title="Enums">
+    TypeScript enum files used for typed constant values across the module.
+
+    | Type | Suffix | Shortcut | Emoji |
+    |---|---|---|---|
+    | Enum | `.enum.ts` | `EN` | 🎛️ |
+  </Accordion>
+
+  <Accordion title="Interfaces">
+    TypeScript interface files that define shared contracts and type shapes.
+
+    | Type | Suffix | Shortcut | Emoji |
+    |---|---|---|---|
+    | Interface | `.interface.ts` | `IF` | 🔗 |
+  </Accordion>
+
+  <Accordion title="Other">
+    Additional NestJS-adjacent file types that appear frequently in real-world projects.
+
+    | Type | Suffix | Shortcut | Emoji |
+    |---|---|---|---|
+    | Repository | `.repository.ts` | `RP` | 🗄️ |
+    | Middleware | `.middleware.ts` / `.middlewares.ts` | `MW` | ⚙️ |
+    | Strategy | `.strategy.ts` / `.strategies.ts` | `ST` | 🧠 |
+    | Test / Spec | `.spec.ts` | `T` | 🧪 |
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Unrecognised files
+
+Any `.ts` file whose name does not match a known suffix is placed in the **Other Files** category and shown with the `📄 File` label. These files are still fully accessible in the quick-pick — you can reach them by scrolling with the arrow keys or by typing part of their filename in the search box. Because they have no assigned shortcut letter, they cannot be opened with a single-character shortcut.
+
+```
+── Other Files ──
+📄  some-utility.ts         File  |  src/user/some-utility.ts
+📄  token.constants.ts      File  |  src/auth/token.constants.ts
+```
+
+<Tip>
+  To add recognition for a new file type, open a pull request on [GitHub](https://github.com/pouryazardosht/nestjs-devtools) and add a new entry to the `NEST_TYPES` array in `src/constants.ts`. Each entry needs a `suffix`, `typeLabel`, `shortcut`, `emoji`, and `category` field.
+
+  ```typescript
+  {
+    suffix: "factory",
+    typeLabel: "Factory",
+    shortcut: "fa",
+    emoji: "🏭",
+    category: "Core NestJS",
+  },
+  ```
+</Tip>

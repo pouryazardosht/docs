@@ -1,0 +1,60 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "NestJS DevTools",
+  "theme": "luma",
+  "colors": {
+    "primary": "#E0234E",
+    "light": "#FF4D6D",
+    "dark": "#C41840"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/pouryazardosht/nestjs-devtools"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/pouryazardosht/nestjs-devtools"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/logger-helper",
+              "features/module-file-searcher"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/commands",
+              "reference/keyboard-shortcuts",
+              "reference/file-types"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/development",
+              "contributing/changelog"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

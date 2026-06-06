@@ -1,0 +1,73 @@
+---
+title: "NestJS DevTools: Smart Logging and Module Navigation"
+sidebarTitle: "Introduction"
+description: "NestJS DevTools is a VS Code extension with smart logger insertion and instant module navigation, designed for NestJS TypeScript projects."
+---
+
+NestJS DevTools is a Visual Studio Code extension built specifically for NestJS TypeScript projects. It eliminates two of the most repetitive friction points in day-to-day NestJS development: writing boilerplate logger statements by hand and hunting through deeply-nested module directories to open the file you need. With a single keyboard chord you can insert a fully-formatted `this.logger.<method>()` call — complete with the enclosing class name auto-detected — or pop open a grouped quick-pick of every file in the current module and jump straight to it without touching your mouse.
+
+<CardGroup cols={2}>
+  <Card title="Logger Helper" icon="bug" href="/features/logger-helper">
+    Insert smart `this.logger.debug/log/warn/error/verbose()` statements in one chord, with the enclosing class name filled in automatically.
+  </Card>
+  <Card title="Module File Searcher" icon="folder-open" href="/features/module-file-searcher">
+    Instantly navigate every `.ts` file inside a NestJS module, grouped by file type and openable with a single shortcut letter.
+  </Card>
+</CardGroup>
+
+## Why NestJS DevTools?
+
+Every NestJS service method eventually needs a log line. The idiomatic pattern looks like this:
+
+```typescript
+this.logger.debug("🔍 UserService ~ user", user);
+```
+
+That means remembering the emoji for each log level, typing out the class name, writing the `~` separator, repeating the variable name twice, and placing the statement in the right spot — after a closing brace when the line opens a block, after the statement otherwise. Multiply this across dozens of methods in dozens of services and the overhead adds up fast.
+
+Navigating module files is its own chore. A real-world NestJS module can scatter its service, controller, guards, DTOs, entities, and strategies across several subdirectories. Finding the right file means expanding folder trees, scrolling, and clicking — or firing off a fuzzy search and hoping the filename is unique enough to surface quickly.
+
+NestJS DevTools collapses both workflows to a single keyboard chord:
+
+- **Logger Helper** — select a variable, press `Cmd+L Cmd+D` (macOS) or `Ctrl+L Ctrl+D` (Windows/Linux), and the correctly-formatted debug log is inserted on the next line (or after the closing brace of a block). Class name detection is automatic.
+- **Module File Searcher** — press `Cmd+L Cmd+K` from any file inside a module and a grouped quick-pick appears showing every `.ts` file. Type a shortcut letter (`s`, `c`, `dt`, …) and the file opens instantly — no Enter required.
+
+## How it works
+
+### Logger Helper
+
+When you trigger a logger command, the extension:
+
+1. **Reads the current selection** — the selected text becomes the variable name embedded in the log message.
+2. **Detects the enclosing class name** — the document is scanned upward from the cursor line, searching for the nearest `class ClassName` declaration. The matched class name is used in the log message automatically.
+3. **Determines the insertion point** — if the current line ends with `{` (opening a new block, such as a multi-line function call), the extension counts braces to locate the matching `}` and inserts the log statement on the line *after* that closing brace, so the log is never placed inside the block. For all other lines the log is inserted immediately after the current line.
+4. **Writes the formatted statement** — indentation is preserved from the current line, and the log takes the form `this.logger.<method>("<emoji> ClassName ~ varName", varName)`.
+5. **Confirms via the status bar** — a `✅ Logger.<method> inserted` message is shown for three seconds.
+
+### Module File Searcher
+
+When you trigger either of the two module navigation commands, the extension:
+
+1. **Locates the module root** — starting from the directory of the currently open file, it walks *up* the directory tree until it finds a folder containing a `*.module.ts` file. That folder becomes the module root. (The global module picker skips this step and lists every `*.module.ts` in the workspace instead.)
+2. **Collects all `.ts` files** — `vscode.workspace.findFiles` is used to glob every `.ts` file beneath the module root, excluding `node_modules`.
+3. **Categorises by file type** — each file name is matched against the known NestJS suffix list (service, controller, guard, dto, entity, …). Unrecognised files fall into an "Other Files" bucket.
+4. **Presents a grouped quick-pick** — files are sorted into category sections (Core NestJS → Entities → DTOs → Enums → Interfaces → Other → Other Files) with separator labels between them.
+5. **Responds to shortcut letters** — as you type in the quick-pick, the extension checks whether the current input matches a known shortcut (`s` → service, `c` → controller, `dt` → DTO, …). The moment a match is found the file is opened immediately, without requiring you to press Enter.
+
+## Extension commands
+
+All seven commands are accessible from the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`) by typing `NestJS Devtools`:
+
+| Command ID | Title |
+|---|---|
+| `nestjs-log-helper.insertDebugLog` | NestJS Devtools: Insert debug log |
+| `nestjs-log-helper.insertLogLog` | NestJS Devtools: Insert log log |
+| `nestjs-log-helper.insertWarnLog` | NestJS Devtools: Insert warn log |
+| `nestjs-log-helper.insertErrorLog` | NestJS Devtools: Insert error log |
+| `nestjs-log-helper.insertVerboseLog` | NestJS Devtools: Insert verbose log |
+| `nestjs-log-helper.searchModuleFiles` | NestJS Devtools: Search Module Files |
+| `nestjs-log-helper.moduleSearcher` | NestJS Devtools: Open Module Files |
+
+<Note>
+  NestJS DevTools requires **Visual Studio Code 1.118.0 or newer**. It has no runtime dependencies beyond VS Code itself — no npm packages need to be installed in your project, and no configuration files are required.
+</Note>

@@ -1,0 +1,56 @@
+---
+title: "NestJS DevTools Keyboard Shortcuts and Keybindings"
+sidebarTitle: "Keyboard Shortcuts"
+description: "All seven NestJS DevTools keyboard shortcuts for macOS and Windows/Linux — logger insertion chords and module navigation keybindings."
+---
+
+Every NestJS DevTools shortcut uses a two-key chord prefixed with `Cmd+L` on macOS or `Ctrl+L` on Windows / Linux. Grouping all bindings under a single prefix makes them easy to discover and remember as one cohesive family — once you learn the prefix, the second key follows a logical letter pattern (e.g. `D` for debug, `E` for error, `M` for module).
+
+---
+
+## Logger shortcuts
+
+These shortcuts insert a `this.logger.<method>(...)` statement on the line after the current selection. They require an active text selection in the editor — pressing one with nothing selected shows a warning message instead of inserting code.
+
+| Command | macOS | Windows / Linux | When |
+|---|---|---|---|
+| Insert debug log | `Cmd+L` `Cmd+D` | `Ctrl+L` `Ctrl+D` | Editor focused |
+| Insert log log | `Cmd+L` `Cmd+L` | `Ctrl+L` `Ctrl+L` | Editor focused |
+| Insert warn log | `Cmd+L` `Cmd+W` | `Ctrl+L` `Ctrl+W` | Editor focused |
+| Insert error log | `Cmd+L` `Cmd+E` | `Ctrl+L` `Ctrl+E` | Editor focused |
+| Insert verbose log | `Cmd+L` `Cmd+V` | `Ctrl+L` `Ctrl+V` | Editor focused |
+
+<Tip>
+  All five logger shortcuts require an active text selection. If you press a logger shortcut with no text selected, the extension shows the warning `⚠️ Select a variable or expression first` and does not insert anything.
+</Tip>
+
+---
+
+## Navigation shortcuts
+
+These shortcuts open the module file quick-pick panel. You can type a file-type shortcut letter (e.g. `s` for Service, `c` for Controller) inside the panel to jump to that file instantly without pressing Enter.
+
+| Command | macOS | Windows / Linux | When |
+|---|---|---|---|
+| Open Module Files (browse all modules) | `Cmd+L` `Cmd+M` | `Ctrl+L` `Ctrl+M` | Any |
+| Search Module Files (from current file) | `Cmd+L` `Cmd+K` | `Ctrl+L` `Ctrl+K` | Editor focused |
+
+**Open Module Files** (`Cmd+L Cmd+M` / `Ctrl+L Ctrl+M`) is available even when no editor is open, making it a useful entry point when you first open the workspace. **Search Module Files** (`Cmd+L Cmd+K` / `Ctrl+L Ctrl+K`) requires an active editor so it can infer the current module from the open file's path.
+
+---
+
+## Customising shortcuts
+
+VS Code allows you to rebind any extension shortcut to a key combination of your choice.
+
+<Steps>
+  <Step title="Open the Keyboard Shortcuts editor">
+    Open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`) and run **Preferences: Open Keyboard Shortcuts**.
+  </Step>
+  <Step title="Filter to NestJS DevTools bindings">
+    In the search box at the top of the Keyboard Shortcuts editor, type `nestjs-log-helper` to display only the NestJS DevTools bindings.
+  </Step>
+  <Step title="Reassign a binding">
+    Hover over the binding you want to change and click the **pencil icon** on the left. Press your desired key combination and confirm with **Enter**. The new binding takes effect immediately.
+  </Step>
+</Steps>

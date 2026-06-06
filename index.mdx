@@ -1,0 +1,68 @@
+---
+title: "NestJS DevTools: Supercharge Your NestJS Workflow in VS Code"
+sidebarTitle: "Home"
+description: "NestJS DevTools is a VS Code extension that inserts smart logger statements and navigates module files instantly — built for NestJS developers."
+---
+
+NestJS DevTools supercharges your NestJS development inside VS Code. With a single keyboard chord you can insert context-aware `Logger` statements and navigate every file in a NestJS module — no more hunting through the file tree or writing repetitive log lines by hand.
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Install the extension from the VS Code Marketplace in seconds.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Learn the core commands and be productive in under five minutes.
+  </Card>
+  <Card title="Logger Helper" icon="bug" href="/features/logger-helper">
+    Insert smart, class-aware logger statements with a single chord.
+  </Card>
+  <Card title="Module File Searcher" icon="folder-open" href="/features/module-file-searcher">
+    Jump to any file in a NestJS module using instant shortcut letters.
+  </Card>
+</CardGroup>
+
+## What's inside
+
+NestJS DevTools ships two tightly-focused features that cover the most common workflow friction points in NestJS projects.
+
+<CardGroup cols={2}>
+  <Card title="Logger Helper" icon="terminal" href="/features/logger-helper">
+    Inserts `this.logger.debug()`, `.log()`, `.warn()`, `.error()`, or `.verbose()` with the enclosing class name automatically injected into the message. Works with block-ending lines — the logger lands **after** the closing brace, never inside it.
+  </Card>
+  <Card title="Module File Searcher" icon="magnifying-glass" href="/features/module-file-searcher">
+    Opens a grouped quick-pick of every `.ts` file in the current module. Type a one- or two-letter shortcut (`S` for service, `C` for controller, `DT` for DTO…) to jump to that file instantly — no Enter key required.
+  </Card>
+</CardGroup>
+
+## Key commands at a glance
+
+| What you want to do | macOS | Windows / Linux |
+|---|---|---|
+| Insert debug log | `Cmd+L Cmd+D` | `Ctrl+L Ctrl+D` |
+| Insert log log | `Cmd+L Cmd+L` | `Ctrl+L Ctrl+L` |
+| Insert warn log | `Cmd+L Cmd+W` | `Ctrl+L Ctrl+W` |
+| Insert error log | `Cmd+L Cmd+E` | `Ctrl+L Ctrl+E` |
+| Insert verbose log | `Cmd+L Cmd+V` | `Ctrl+L Ctrl+V` |
+| Search files in current module | `Cmd+L Cmd+K` | `Ctrl+L Ctrl+K` |
+| Browse all modules | `Cmd+L Cmd+M` | `Ctrl+L Ctrl+M` |
+
+<Tip>
+  All shortcuts use the `Cmd+L` / `Ctrl+L` prefix so they're easy to remember as a single "NestJS DevTools" chord family.
+</Tip>
+
+## Next steps
+
+<Steps>
+  <Step title="Install the extension">
+    Head to the [Installation](/installation) page and get the extension running in VS Code.
+  </Step>
+  <Step title="Run your first command">
+    Follow the [Quickstart](/quickstart) to insert your first logger statement and open the module file picker.
+  </Step>
+  <Step title="Explore all features">
+    Deep-dive into [Logger Helper](/features/logger-helper) and [Module File Searcher](/features/module-file-searcher) to master every option.
+  </Step>
+  <Step title="Browse the full reference">
+    The [Commands](/reference/commands) and [Keyboard Shortcuts](/reference/keyboard-shortcuts) pages list every command ID and keybinding for quick lookup.
+  </Step>
+</Steps>

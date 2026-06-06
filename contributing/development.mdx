@@ -1,0 +1,193 @@
+---
+title: "Develop and Contribute to NestJS DevTools Extension"
+sidebarTitle: "Development"
+description: "Learn how to clone, build, and run the NestJS DevTools VS Code extension locally, understand its project structure, and open a pull request."
+---
+
+NestJS DevTools is an open-source VS Code extension — contributions of all sizes are welcome. This guide walks you through cloning the repository, understanding the project layout, running the extension locally, and opening a pull request. The codebase is intentionally small and well-structured, so getting oriented takes only a few minutes.
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **Node.js** (includes `npm`) — used to install dependencies and run build scripts
+- **VS Code** — any recent version; the extension targets engine `^1.118.0`
+- **Git** — to clone the repository and manage branches
+
+## Local setup
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/pouryazardosht/nestjs-devtools.git
+    cd nestjs-devtools
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    ```bash
+    npm install
+    ```
+
+    This installs the TypeScript compiler, webpack, ESLint, and the VS Code test toolchain — everything needed to build and test the extension.
+  </Step>
+
+  <Step title="Open the folder in VS Code">
+    ```bash
+    code .
+    ```
+  </Step>
+
+  <Step title="Launch the Extension Development Host">
+    Press **F5**. VS Code will run the default build task (`npm run watch`) and open a new **Extension Development Host** window with NestJS DevTools loaded and active. Any TypeScript file you open in that window can be used to test the extension's commands.
+  </Step>
+</Steps>
+
+## Project structure
+
+```text
+nestjs-devtools/
+├── src/
+│   ├── extension.ts        # Entry point — activates extension, registers all commands
+│   ├── constants.ts        # LOGGER_METHODS and NEST_TYPES definitions
+│   ├── commands/
+│   │   ├── insertLogger.ts       # Logger insertion logic
+│   │   ├── moduleSearcher.ts     # Browse-all-modules command
+│   │   └── searchModuleFiles.ts  # Search-from-current-file command
+│   └── utils/
+│       └── getEnclosingClassName.ts  # Scans upward for enclosing class name
+├── package.json            # Extension manifest (commands, keybindings, engines)
+├── tsconfig.json           # TypeScript config
+└── webpack.config.js       # Bundles src/ → dist/extension.js
+```
+
+**Key entry points:**
+
+- **`src/extension.ts`** — the `activate()` function is called by VS Code when the extension is first used. It iterates over `LOGGER_METHODS` to register logger commands dynamically, then registers the two module-searcher commands explicitly.
+- **`src/constants.ts`** — the single source of truth for logger method names (with their emoji) and every recognised NestJS file type (with its suffix, label, shortcut, emoji, and category). Changing these values is all that is required to add new logger methods or file types.
+- **`webpack.config.js`** — bundles the TypeScript source from `src/` into `dist/extension.js`, which is the file VS Code actually loads. The `vscode` module is declared as an external so webpack does not attempt to bundle it.
+
+## Build scripts
+
+| Script | Command | What it does |
+|--------|---------|--------------|
+| Pre-publish | `npm run vscode:prepublish` | Runs `package` automatically before publishing to the VS Code Marketplace |
+| Compile (dev) | `npm run compile` | Runs webpack in development mode — fast, with source maps |
+| Watch | `npm run watch` | Watches `src/` for changes and recompiles automatically |
+| Package (prod) | `npm run package` | Production webpack build with hidden source maps, ready for publishing |
+| Compile tests | `npm run compile-tests` | Compiles the test suite with `tsc` into the `out/` directory |
+| Watch tests | `npm run watch-tests` | Watches and recompiles the test suite on every change |
+| Pre-test | `npm run pretest` | Runs `compile-tests`, `compile`, and `lint` automatically before each test run |
+| Lint | `npm run lint` | Runs ESLint over `src/` using the TypeScript-ESLint ruleset |
+| Test | `npm run test` | Runs the VS Code extension test suite via `vscode-test` |
+
+The `pretest` hook automatically runs `compile-tests`, `compile`, and `lint` before every test run, so the suite always exercises up-to-date, lint-clean code.
+
+## Adding a new logger method
+
+Logger commands are driven entirely by the `LOGGER_METHODS` map in `src/constants.ts`. No manual command registration is needed.
+
+1. **Add the method to `LOGGER_METHODS`** in `src/constants.ts`:
+
+   ```typescript
+   // Before
+   export const LOGGER_METHODS: Record<string, string> = {
+     debug: "🔍",
+     log: "📝",
+     warn: "⚠️",
+     error: "❌",
+     verbose: "🔊",
+   };
+
+   // After — adding a hypothetical "fatal" method
+   export const LOGGER_METHODS: Record<string, string> = {
+     debug: "🔍",
+     log: "📝",
+     warn: "⚠️",
+     error: "❌",
+     verbose: "🔊",
+     fatal: "💀",
+   };
+   ```
+
+2. **Register the command and keybinding in `package.json`** under `contributes.commands` and `contributes.keybindings`:
+
+   ```json
+   // contributes.commands
+   {
+     "command": "nestjs-log-helper.insertFatalLog",
+     "title": "NestJS Devtools: Insert fatal log"
+   }
+
+   // contributes.keybindings
+   {
+     "command": "nestjs-log-helper.insertFatalLog",
+     "key": "ctrl+l ctrl+f",
+     "mac": "cmd+l cmd+f",
+     "when": "editorTextFocus"
+   }
+   ```
+
+3. **No changes to `extension.ts` are needed.** The `activate()` function iterates over `Object.keys(LOGGER_METHODS)` and registers `nestjs-log-helper.insert${Capitalize(method)}Log` for each key automatically.
+
+## Adding a new file type
+
+File types are defined in the `NEST_TYPES` array in `src/constants.ts`. Each entry describes how the extension recognises, labels, and displays a NestJS file.
+
+1. **Add a new entry to `NEST_TYPES`** in `src/constants.ts`:
+
+   ```typescript
+   {
+     suffix: ".saga.ts",
+     typeLabel: "Saga",
+     shortcut: "SA",
+     emoji: "⚡",
+     category: "Core NestJS",
+   }
+   ```
+
+   The fields are:
+
+   | Field | Purpose |
+   |-------|---------|
+   | `suffix` | File name suffix used to recognise the type (e.g. `.service.ts`) |
+   | `typeLabel` | Human-readable label shown in the quick-pick list |
+   | `shortcut` | Letter(s) the user types to open the file instantly |
+   | `emoji` | Icon displayed next to the file in the picker |
+   | `category` | Grouping header in the quick-pick (`"Core NestJS"`, `"Entities"`, `"DTOs"`, etc.) |
+
+2. **If the type name has a common plural form**, add the suffix to the `pluralTypes` array in `src/commands/searchModuleFiles.ts` so that directory scanning handles pluralised folder names correctly.
+
+3. **Rebuild and test:**
+
+   ```bash
+   npm run compile
+   ```
+
+   Then press **F5** to reload the Extension Development Host and verify the new type appears in the file picker.
+
+## Submitting a pull request
+
+1. **Fork** the repository on GitHub.
+2. **Create a feature branch** from `main`:
+
+   ```bash
+   git checkout -b feat/my-improvement
+   ```
+
+3. **Make your changes**, then verify everything is clean:
+
+   ```bash
+   npm run lint
+   npm run test
+   ```
+
+4. **Push your branch** and open a pull request against `main`. Include a clear description of what the change does and why.
+
+<Note>
+  For significant changes — new features, architectural refactors, or anything that affects the extension manifest — please open an issue first to discuss the approach before investing time in a full implementation.
+</Note>
+
+<Tip>
+  VS Code's built-in debugger works seamlessly with the Extension Development Host. Set breakpoints anywhere in `src/extension.ts` or any file under `src/commands/`, then press **F5**. When the extension code is hit, execution pauses in your editor and you can inspect variables, step through logic, and evaluate expressions in the Debug Console — no extra configuration required.
+</Tip>

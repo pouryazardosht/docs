@@ -1,0 +1,127 @@
+---
+title: "NestJS DevTools VS Code Extension Command Reference"
+sidebarTitle: "Commands"
+description: "Complete reference for all seven NestJS DevTools VS Code commands — command IDs, display titles, what they do, and when they are available."
+---
+
+All NestJS DevTools commands are registered under the `nestjs-log-helper` namespace. You can invoke any of them from the Command Palette by opening it and searching **NestJS Devtools** — every extension command surfaces under that prefix, so you never need to remember exact command IDs.
+
+---
+
+## Logger commands
+
+The five logger commands insert a `this.logger.<method>(...)` statement on the line immediately after your current selection. Each command auto-detects the enclosing class name and formats the log message with a distinctive emoji so log lines are easy to scan in the terminal.
+
+**Insertion format**
+
+```typescript
+this.logger.<method>("<emoji> ClassName ~ selectedText", selectedText);
+```
+
+If no enclosing class is found, the class name segment is omitted:
+
+```typescript
+this.logger.<method>("<emoji> selectedText", selectedText);
+```
+
+<ParamField name="nestjs-log-helper.insertDebugLog" type="Logger Command">
+  **Title:** `NestJS Devtools: Insert debug log`
+
+  Inserts a `debug`-level logger statement using the 🔍 emoji.
+
+  ```typescript
+  this.logger.debug("🔍 UserService ~ userId", userId);
+  ```
+
+  **When:** `editorTextFocus` — requires an active text selection.
+</ParamField>
+
+<ParamField name="nestjs-log-helper.insertLogLog" type="Logger Command">
+  **Title:** `NestJS Devtools: Insert log log`
+
+  Inserts a `log`-level logger statement using the 📝 emoji.
+
+  ```typescript
+  this.logger.log("📝 UserService ~ userId", userId);
+  ```
+
+  **When:** `editorTextFocus` — requires an active text selection.
+</ParamField>
+
+<ParamField name="nestjs-log-helper.insertWarnLog" type="Logger Command">
+  **Title:** `NestJS Devtools: Insert warn log`
+
+  Inserts a `warn`-level logger statement using the ⚠️ emoji.
+
+  ```typescript
+  this.logger.warn("⚠️ UserService ~ userId", userId);
+  ```
+
+  **When:** `editorTextFocus` — requires an active text selection.
+</ParamField>
+
+<ParamField name="nestjs-log-helper.insertErrorLog" type="Logger Command">
+  **Title:** `NestJS Devtools: Insert error log`
+
+  Inserts an `error`-level logger statement using the ❌ emoji.
+
+  ```typescript
+  this.logger.error("❌ UserService ~ userId", userId);
+  ```
+
+  **When:** `editorTextFocus` — requires an active text selection.
+</ParamField>
+
+<ParamField name="nestjs-log-helper.insertVerboseLog" type="Logger Command">
+  **Title:** `NestJS Devtools: Insert verbose log`
+
+  Inserts a `verbose`-level logger statement using the 🔊 emoji.
+
+  ```typescript
+  this.logger.verbose("🔊 UserService ~ userId", userId);
+  ```
+
+  **When:** `editorTextFocus` — requires an active text selection.
+</ParamField>
+
+---
+
+## Navigation commands
+
+The two navigation commands let you jump to any file inside a NestJS module without leaving the keyboard. Both commands open a grouped quick-pick panel where you can either scroll to a file or type its shortcut letter to open it instantly.
+
+<ParamField name="nestjs-log-helper.moduleSearcher" type="Navigation Command">
+  **Title:** `NestJS Devtools: Open Module Files`
+
+  Searches the entire workspace for every `*.module.ts` file and presents them in a sortable quick-pick. After you select a module, a second quick-pick lists all `.ts` files inside that module's directory, grouped by NestJS file type (services, controllers, guards, etc.).
+
+  **When:** Available at all times — no editor focus required.
+</ParamField>
+
+<ParamField name="nestjs-log-helper.searchModuleFiles" type="Navigation Command">
+  **Title:** `NestJS Devtools: Search Module Files`
+
+  Starting from the active editor's file path, the command walks up the directory tree until it finds the nearest `*.module.ts` file. It then opens a grouped quick-pick listing all `.ts` files inside that module's directory. This is the fastest way to navigate within the module you are already working in.
+
+  **When:** `editorTextFocus` — requires an open file in the editor.
+</ParamField>
+
+---
+
+## Running commands from the Command Palette
+
+<Steps>
+  <Step title="Open the Command Palette">
+    Press `Cmd+Shift+P` on macOS or `Ctrl+Shift+P` on Windows / Linux.
+  </Step>
+  <Step title="Filter to NestJS DevTools">
+    Type **NestJS Devtools** to filter the list to all seven extension commands.
+  </Step>
+  <Step title="Run the command">
+    Select the desired command using the arrow keys and press **Enter**, or click it directly.
+  </Step>
+</Steps>
+
+<Note>
+  Keyboard shortcuts are faster for commands you use frequently. See the [Keyboard Shortcuts reference](/reference/keyboard-shortcuts) for the full chord table and instructions on customising bindings.
+</Note>

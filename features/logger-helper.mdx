@@ -1,0 +1,113 @@
+---
+title: "Logger Helper: Smart NestJS Logger Insertion in VS Code"
+sidebarTitle: "Logger Helper"
+description: "Insert this.logger.debug(), .log(), .warn(), .error(), or .verbose() with automatic class name detection and block-aware placement."
+---
+
+Logger Helper eliminates the tedium of writing `this.logger.<method>()` boilerplate by hand. Select a variable or expression, press a two-key chord, and the extension inserts a fully formatted log statement on the correct line — automatically embedding the enclosing class name in the message so you always know exactly where a log came from.
+
+## How it works
+
+Every logger insertion follows three steps drawn directly from the extension's source:
+
+1. **Read the selection.** The extension reads `editor.selection` and calls `editor.document.getText(selection).trim()` to get the selected variable or expression. If nothing is selected, a warning is shown and execution stops.
+
+2. **Detect the enclosing class name.** `getEnclosingClassName` walks upward from the cursor line, testing each line against the regex:
+   ```typescript
+   /^\s*(?:export\s+)?(?:abstract\s+)?class\s+([a-zA-Z_$][\w$]*)/
+   ```
+   The first match yields the class name (e.g. `UserService`). If no class is found, the log message omits the class prefix entirely.
+
+3. **Determine the insertion point.** `findInsertionLine` inspects the line where the selection starts:
+   - If that line's trimmed text **does not** end with `{`, the logger is inserted on the very next line.
+   - If it **does** end with `{` (an opening block), the algorithm counts brace depth — incrementing for every `{` and decrementing for every `}` on each subsequent line — until depth reaches `0`. The logger is then inserted **after that closing `}` line**, safely outside the block.
+
+   The inserted statement inherits the indentation of the selection line, so it aligns naturally with your existing code.
+
+## Log methods
+
+Five methods are available, each mapped to an emoji and a dedicated keyboard chord:
+
+| Method    | Emoji | macOS Chord   | Windows / Linux Chord |
+| --------- | ----- | ------------- | --------------------- |
+| `debug`   | 🔍    | `Cmd+L Cmd+D` | `Ctrl+L Ctrl+D`       |
+| `log`     | 📝    | `Cmd+L Cmd+L` | `Ctrl+L Ctrl+L`       |
+| `warn`    | ⚠️    | `Cmd+L Cmd+W` | `Ctrl+L Ctrl+W`       |
+| `error`   | ❌    | `Cmd+L Cmd+E` | `Ctrl+L Ctrl+E`       |
+| `verbose` | 🔊    | `Cmd+L Cmd+V` | `Ctrl+L Ctrl+V`       |
+
+## Usage example
+
+Suppose your cursor is inside `UserService` and you select the identifier `user` after a `findOne` call:
+
+```typescript
+// Before: select "user" on the line below, then press Cmd+L Cmd+D
+const user = await this.userRepository.findOne({
+  where: { email },
+  select: { id: true, email: true },
+});
+```
+
+After the chord fires:
+
+```typescript
+// After: logger inserted after the closing brace
+const user = await this.userRepository.findOne({
+  where: { email },
+  select: { id: true, email: true },
+});
+this.logger.debug("🔍 UserService ~ user", user);
+```
+
+The log message format is always `"<emoji> <ClassName> ~ <selectedText>"`, with both the variable name and its runtime value passed to the logger.
+
+## Block-aware insertion
+
+When the line where your selection starts ends with `{`, the extension skips past the entire block and places the logger **after the matching closing `}`**.
+
+```typescript
+// Select "user" on the findOne line — it ends with "{"
+const user = await this.userRepository.findOne({
+  where: { email },
+  select: { id: true, email: true },
+});
+// ↑ Logger is placed here, after the closing brace
+this.logger.debug("🔍 UserService ~ user", user);
+```
+
+<Tip>
+  This block-aware placement means you never accidentally insert a logger
+  statement *inside* a multi-line argument object or callback — the log always
+  lands in a position where it is valid JavaScript/TypeScript.
+</Tip>
+
+## Class name detection
+
+`getEnclosingClassName` scans upward from the cursor line, so it works regardless of how far down inside a class the cursor sits. The regex matches standard class declarations including exported and abstract variants:
+
+```typescript
+// All of these are detected correctly:
+export class UserService { ... }
+export abstract class BaseRepository { ... }
+class AuthGuard { ... }
+```
+
+When the class is `AuthGuard`, a debug statement on a selected variable `token` produces:
+
+```typescript
+this.logger.debug("🔍 AuthGuard ~ token", token);
+```
+
+If the cursor is in a plain function or module-level code with no enclosing class, the class prefix is omitted and the message becomes simply `"🔍 token"`.
+
+## Requirements
+
+<Warning>
+  Logger Helper requires an active text selection. If no text is highlighted
+  when you press the chord, VS Code will display a warning — "⚠️ Select a
+  variable or expression first" — and no logger statement will be inserted.
+</Warning>
+
+<Card title="Keyboard Shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+  View all logger keybindings
+</Card>
